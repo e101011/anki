@@ -49,20 +49,20 @@ document.querySelector('button.download').addEventListener('click', () => {
 						audio: res.meanings[0].soundUrl
 					});
 
-					downloadAudio(res.meanings[0].soundUrl);
+					downloadAudio(res.meanings[0].soundUrl, res.text);
 				});
 		}
 
 		function generateTextFile() {
 			dictionary.map(item => {
-				const {word: w, meaning, transcription} = item;
+				const {word, meaning, transcription} = item;
 
-				const text = `${w};${meaning};${transcription};[sound:anki_${word}.mp3]`;
+				const text = `${word};${meaning};${transcription};[sound:anki_${word.replace(' ', '_')}.mp3]`;
 				file = file + `${text}\n`;
 			});
 		}
 
-		function downloadAudio(soundUrl) {
+		function downloadAudio(soundUrl, title) {
 			fetch(`https://cors-anywhere.herokuapp.com/https:${soundUrl}`)
 				.then((res) => res.blob())
 				.then((res) => {
@@ -71,7 +71,7 @@ document.querySelector('button.download').addEventListener('click', () => {
 					}));
 					const link = document.createElement('a');
 					link.setAttribute('href', url);
-					link.setAttribute('Download', `anki_${word}.mp3`);
+					link.setAttribute('Download', `anki_${title.replace(' ', '_')}.mp3`);
 					link.click();
 				})
 		}
